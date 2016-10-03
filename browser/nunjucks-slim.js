@@ -2251,16 +2251,19 @@ var nunjucks =
 
 	function contextOrFrameLookup(context, frame, name) {
 	    var val = frame.lookup(name);
-	    val = (val) ? val : context.lookup(name);
-	    if (!val) {
+	    val = (val !== undefined) ? val : context.lookup(name);
+	    if (val === undefined) {
 	        // Basic Python Compatibility
 	        switch (name) {
 	            case 'True':
 	                val = true;
+	                break;
 	            case 'False':
 	                val = false;
+	                break;
 	            case 'None':
 	                val = null;
+	                break;
 	        }
 	    }
 	    return val;
