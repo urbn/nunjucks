@@ -248,9 +248,19 @@ function callWrap(obj, name, context, args) {
 
 function contextOrFrameLookup(context, frame, name) {
     var val = frame.lookup(name);
-    return (val !== undefined && val !== null) ?
-        val :
-        context.lookup(name);
+    val = (val) ? val : context.lookup(name);
+    if (!val) {
+        // Basic Python Compatibility
+        switch (name) {
+            case 'True':
+                val = true;
+            case 'False':
+                val = false;
+            case 'None':
+                val = null;
+        }
+    }
+    return val;
 }
 
 function handleError(error, lineno, colno) {
