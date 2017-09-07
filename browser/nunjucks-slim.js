@@ -53,7 +53,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -143,9 +143,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -448,9 +448,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -1044,15 +1044,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -1122,9 +1122,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
 
@@ -1204,9 +1204,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// Safari 6 and 6.1 for desktop, iPad, and iPhone are the only browsers that
 	// have WebKitMutationObserver but not un-prefixed MutationObserver.
-	// Must use `global` instead of `window` to work in both frames and web
+	// Must use `global` or `self` instead of `window` to work in both frames and web
 	// workers. `global` is a provision of Browserify, Mr, Mrs, or Mop.
-	var BrowserMutationObserver = global.MutationObserver || global.WebKitMutationObserver;
+
+	/* globals self */
+	var scope = typeof global !== "undefined" ? global : self;
+	var BrowserMutationObserver = scope.MutationObserver || scope.WebKitMutationObserver;
 
 	// MutationObservers are desirable because they have high priority and work
 	// reliably everywhere they are implemented.
@@ -1349,9 +1352,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -1419,9 +1422,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = extend(Object, 'Object', {});
 
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -2011,9 +2014,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = filters;
 
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -2265,11 +2268,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return obj.apply(context, args);
 	}
 
+	// Modified for better compatibility
 	function contextOrFrameLookup(context, frame, name) {
 	    var val = frame.lookup(name);
-	    return (val !== undefined && val !== null) ?
-	        val :
-	        context.lookup(name);
+	    val = (val !== undefined) ? val : context.lookup(name);
+	    if (val === undefined) {
+	        // Basic Python Compatibility
+	        switch (name) {
+	            case 'True':
+	                val = true;
+	                break;
+	            case 'False':
+	                val = false;
+	                break;
+	            case 'None':
+	                val = null;
+	                break;
+	        }
+	    }
+	    return val;
 	}
 
 	function handleError(error, lineno, colno) {
@@ -2379,9 +2396,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -2464,9 +2481,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = globals;
 
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -2492,9 +2509,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = PrecompiledLoader;
 
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -2531,9 +2548,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Loader;
 
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	function installCompat() {
 	  'use strict';
@@ -2682,9 +2699,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return function() {return ARRAY_MEMBERS[val].apply(obj, arguments);};
 	    }
 
-	    if (lib.isObject(obj) && OBJECT_MEMBERS.hasOwnProperty(val)) {
-	      return function() {return OBJECT_MEMBERS[val].apply(obj, arguments);};
-	    }
+	    // Commented out for better compatibility
+	    
+	    // if (lib.isObject(obj) && OBJECT_MEMBERS.hasOwnProperty(val)) {
+	    //   return function() {return OBJECT_MEMBERS[val].apply(obj, arguments);};
+	    // }
 
 	    return orig_memberLookup.apply(this, arguments);
 	  };
@@ -2693,7 +2712,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = installCompat;
 
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

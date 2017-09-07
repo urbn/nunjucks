@@ -145,9 +145,11 @@ function installCompat() {
       return function() {return ARRAY_MEMBERS[val].apply(obj, arguments);};
     }
 
-    if (lib.isObject(obj) && OBJECT_MEMBERS.hasOwnProperty(val)) {
-      return function() {return OBJECT_MEMBERS[val].apply(obj, arguments);};
-    }
+    // Commented out for better compatibility
+    
+    // if (lib.isObject(obj) && OBJECT_MEMBERS.hasOwnProperty(val)) {
+    //   return function() {return OBJECT_MEMBERS[val].apply(obj, arguments);};
+    // }
 
     return orig_memberLookup.apply(this, arguments);
   };
