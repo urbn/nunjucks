@@ -90,7 +90,7 @@ var Compiler = Object.extend({
 
         this.closeScopeLevels();
         this.emitLine('} catch (e) {');
-        this.emitLine('  cb(runtime.handleError(e, lineno, colno));');
+        this.emitLine('  cb(runtime.he(e, lineno, colno));');
         this.emitLine('}');
         this.emitLine('}');
         this.buffer = null;
@@ -215,7 +215,7 @@ var Compiler = Object.extend({
         var autoescape = typeof node.autoescape === 'boolean' ? node.autoescape : true;
 
         if(!async) {
-            this.emit(this.buffer + ' += runtime.suppressValue(');
+            this.emit(this.buffer + ' += runtime.sv(');
         }
 
         this.emit('env.getExtension("' + node.extName + '")["' + node.prop + '"](');
@@ -274,7 +274,7 @@ var Compiler = Object.extend({
         if(async) {
             var res = this.tmpid();
             this.emitLine(', ' + this.makeCallback(res));
-            this.emitLine(this.buffer + ' += runtime.suppressValue(' + res + ', ' + autoescape + ' && env.opts.autoescape);');
+            this.emitLine(this.buffer + ' += runtime.sv(' + res + ', ' + autoescape + ' && env.opts.autoescape);');
             this.addScopeLevel();
         }
         else {
@@ -316,7 +316,7 @@ var Compiler = Object.extend({
             this.emit(v);
         }
         else {
-            this.emit('runtime.contextOrFrameLookup(' +
+            this.emit('runtime.cfl(' +
                       'context, frame, "' + name + '")');
         }
     },
@@ -366,7 +366,7 @@ var Compiler = Object.extend({
     },
 
     compileIn: function(node, frame) {
-      this.emit('runtime.inOperator(');
+      this.emit('runtime.inOp(');
       this.compile(node.left, frame);
       this.emit(',');
       this.compile(node.right, frame);
@@ -426,7 +426,7 @@ var Compiler = Object.extend({
     },
 
     compileLookupVal: function(node, frame) {
-        this.emit('runtime.memberLookup((');
+        this.emit('runtime.ml((');
         this._compileExpression(node.target, frame);
         this.emit('),');
         this._compileExpression(node.val, frame);
@@ -457,7 +457,7 @@ var Compiler = Object.extend({
         this.emit('(lineno = ' + node.lineno +
                   ', colno = ' + node.colno + ', ');
 
-        this.emit('runtime.callWrap(');
+        this.emit('runtime.cw(');
         // Compile it as normal.
         this._compileExpression(node.name, frame);
 
@@ -499,7 +499,7 @@ var Compiler = Object.extend({
             names.push(pair.key.value);
         });
 
-        this.emit('runtime.makeKeywordArgs(');
+        this.emit('runtime.mka(');
         this.compileDict(node, frame);
         this.emit(')');
     },
@@ -1092,9 +1092,9 @@ var Compiler = Object.extend({
                 }
             }
             else {
-                this.emit(this.buffer + ' += runtime.suppressValue(');
+                this.emit(this.buffer + ' += runtime.sv(');
                 if(this.throwOnUndefined) {
-                    this.emit('runtime.ensureDefined(');
+                    this.emit('runtime.ed(');
                 }
                 this.compile(children[i], frame);
                 if(this.throwOnUndefined) {

@@ -348,13 +348,20 @@ module.exports = {
     Frame: Frame,
     makeMacro: makeMacro,
     makeKeywordArgs: makeKeywordArgs,
+    mka: makeKeywordArgs,
     numArgs: numArgs,
     suppressValue: suppressValue,
+    sv: suppressValue,
     ensureDefined: ensureDefined,
+    ed: ensureDefined,
     memberLookup: memberLookup,
+    ml: memberLookup,
     contextOrFrameLookup: contextOrFrameLookup,
+    cfl: contextOrFrameLookup,
     callWrap: callWrap,
+    cw: callWrap,
     handleError: handleError,
+    he: handleError,
     isArray: lib.isArray,
     keys: lib.keys,
     SafeString: SafeString,
@@ -362,5 +369,6 @@ module.exports = {
     markSafe: markSafe,
     asyncEach: asyncEach,
     asyncAll: asyncAll,
-    inOperator: lib.inOperator
+    inOperator: lib.inOperator,
+    inOp: lib.inOperator
 };

@@ -22,7 +22,7 @@ function installCompat() {
         runtime.memberLookup = orig_memberLookup;
     }
 
-    runtime.contextOrFrameLookup = function(context, frame, key) {
+    runtime.cfl = runtime.contextOrFrameLookup = function(context, frame, key) {
         var val = orig_contextOrFrameLookup.apply(this, arguments);
         if (val === undefined) {
             switch (key) {
@@ -279,7 +279,7 @@ function installCompat() {
     OBJECT_MEMBERS.iteritems = OBJECT_MEMBERS.items;
     OBJECT_MEMBERS.itervalues = OBJECT_MEMBERS.values;
     OBJECT_MEMBERS.iterkeys = OBJECT_MEMBERS.keys;
-    runtime.memberLookup = function(obj, val, autoescape) { // jshint ignore:line
+    runtime.ml = runtime.memberLookup = function(obj, val, autoescape) { // jshint ignore:line
         if (arguments.length === 4) {
             return sliceLookup.apply(this, arguments);
         }
