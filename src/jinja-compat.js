@@ -285,6 +285,8 @@ function installCompat() {
         }
         obj = obj || {};
 
+        /*
+         * Commented out for speed and recursive nonsense
         // If the object is an object, return any of the methods that Python would
         // otherwise provide.
         if (lib.isArray(obj) && ARRAY_MEMBERS.hasOwnProperty(val)) {
@@ -294,6 +296,7 @@ function installCompat() {
         if (lib.isObject(obj) && OBJECT_MEMBERS.hasOwnProperty(val)) {
             return function() {return OBJECT_MEMBERS[val].apply(obj, arguments);};
         }
+        */
 
         return orig_memberLookup.apply(this, arguments);
     };
