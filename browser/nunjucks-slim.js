@@ -1,4 +1,4 @@
-/*! Browser bundle of nunjucks 3.0.1 (slim, only works with precompiled templates) */
+/*! Browser bundle of nunjucks 3.0.2-dev.1 (slim, only works with precompiled templates) */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -426,7 +426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    else {
 	        var keys = [];
 	        for(var k in obj) {
-	            if(obj.hasOwnProperty(k)) {
+	            if(Object.prototype.hasOwnProperty.call(obj, k)) {
 	                keys.push(k);
 	            }
 	        }
@@ -793,7 +793,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Make a duplicate of ctx
 	        this.ctx = {};
 	        for(var k in ctx) {
-	            if(ctx.hasOwnProperty(k)) {
+	            if(Object.prototype.hasOwnProperty.call(ctx, k)) {
 	                this.ctx[k] = ctx[k];
 	            }
 	        }
@@ -1944,7 +1944,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else {
 	                parts = [];
 	                for (var k in obj) {
-	                    if (obj.hasOwnProperty(k)) {
+	                    if (Object.prototype.hasOwnProperty.call(obj, k)) {
 	                        parts.push(enc(k) + '=' + enc(obj[k]));
 	                    }
 	                }
@@ -2154,11 +2154,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return obj;
 	}
 
+	function isKeywordArgs(obj) {
+	  return obj && Object.prototype.hasOwnProperty.call(obj, '__keywords');
+	}
+
 	function getKeywordArgs(args) {
 	    var len = args.length;
 	    if(len) {
 	        var lastArg = args[len - 1];
-	        if(lastArg && lastArg.hasOwnProperty('__keywords')) {
+	        if(isKeywordArgs(lastArg)) {
 	            return lastArg;
 	        }
 	    }
@@ -2172,7 +2176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var lastArg = args[len - 1];
-	    if(lastArg && lastArg.hasOwnProperty('__keywords')) {
+	    if(isKeywordArgs(lastArg)) {
 	        return len - 1;
 	    }
 	    else {
@@ -2372,13 +2376,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Frame: Frame,
 	    makeMacro: makeMacro,
 	    makeKeywordArgs: makeKeywordArgs,
+	    mka: makeKeywordArgs,
 	    numArgs: numArgs,
 	    suppressValue: suppressValue,
+	    sv: suppressValue,
 	    ensureDefined: ensureDefined,
+	    ed: ensureDefined,
 	    memberLookup: memberLookup,
+	    ml: memberLookup,
 	    contextOrFrameLookup: contextOrFrameLookup,
+	    cfl: contextOrFrameLookup,
 	    callWrap: callWrap,
+	    cw: callWrap,
 	    handleError: handleError,
+	    he: handleError,
 	    isArray: lib.isArray,
 	    keys: lib.keys,
 	    SafeString: SafeString,
@@ -2386,7 +2397,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    markSafe: markSafe,
 	    asyncEach: asyncEach,
 	    asyncAll: asyncAll,
-	    inOperator: lib.inOperator
+	    inOperator: lib.inOperator,
+	    inOp: lib.inOperator
 	};
 
 
@@ -2918,7 +2930,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        runtime.memberLookup = orig_memberLookup;
 	    }
 
-	    runtime.contextOrFrameLookup = function(context, frame, key) {
+	    runtime.cfl = runtime.contextOrFrameLookup = function(context, frame, key) {
 	        var val = orig_contextOrFrameLookup.apply(this, arguments);
 	        if (val === undefined) {
 	            switch (key) {
@@ -3175,12 +3187,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    OBJECT_MEMBERS.iteritems = OBJECT_MEMBERS.items;
 	    OBJECT_MEMBERS.itervalues = OBJECT_MEMBERS.values;
 	    OBJECT_MEMBERS.iterkeys = OBJECT_MEMBERS.keys;
-	    runtime.memberLookup = function(obj, val, autoescape) { // jshint ignore:line
+	    runtime.ml = runtime.memberLookup = function(obj, val, autoescape) { // jshint ignore:line
 	        if (arguments.length === 4) {
 	            return sliceLookup.apply(this, arguments);
 	        }
 	        obj = obj || {};
 
+	        /*
+	         * Commented out for speed and recursive nonsense
 	        // If the object is an object, return any of the methods that Python would
 	        // otherwise provide.
 	        if (lib.isArray(obj) && ARRAY_MEMBERS.hasOwnProperty(val)) {
@@ -3190,6 +3204,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (lib.isObject(obj) && OBJECT_MEMBERS.hasOwnProperty(val)) {
 	            return function() {return OBJECT_MEMBERS[val].apply(obj, arguments);};
 	        }
+	        */
 
 	        return orig_memberLookup.apply(this, arguments);
 	    };
