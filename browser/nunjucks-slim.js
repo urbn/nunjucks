@@ -2285,7 +2285,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    val = (val !== undefined) ? val : context.lookup(name);
 	    // Bake in jinja2 compat for True/False
 	    if (val === undefined) {
-	        switch (key) {
+	        switch (name) {
 	            case 'True':
 	                return true;
 	            case 'False':
