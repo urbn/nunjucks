@@ -254,9 +254,19 @@ function callWrap(obj, name, context, args) {
 
 function contextOrFrameLookup(context, frame, name) {
     var val = frame.lookup(name);
-    return (val !== undefined) ?
-        val :
-        context.lookup(name);
+    val = (val !== undefined) ? val : context.lookup(name);
+    // Bake in jinja2 compat for True/False
+    if (val === undefined) {
+        switch (key) {
+            case 'True':
+                return true;
+            case 'False':
+                return false;
+            case 'None':
+                return null;
+        }
+    }
+    return val;
 }
 
 function handleError(error, lineno, colno) {
